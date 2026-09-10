@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — 2026-09-10
+## 0.1.0 - 2026-09-10
 
 - Add a Manifest V3 extension for Chrome and Firefox.
 - Add a Steam store panel with public player count, reviews and release date.

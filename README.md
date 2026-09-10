@@ -4,6 +4,9 @@ SteamProfiler information where a Steam shopper can use it: directly on each
 game's store page. The first release adds a compact panel with current players,
 review totals, release date, a complete-analysis link and an on-demand trailer.
 
+The page for it on the site is <https://steamprofiler.org/extension>, which is
+where a reader who is not going to clone a repository is sent.
+
 The extension is deliberately small:
 
 - Chrome and Firefox use the same Manifest V3 source tree.
