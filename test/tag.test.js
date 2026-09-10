@@ -14,7 +14,7 @@ const tag = context.SteamProfilerTag;
 
 const OWNER = "76561198000000000";
 const OTHER = "76561198999999999";
-const card = (query = "") => `[!stpf=url=https://steamprofiler.org/bars.svg${query}]`;
+const card = (query = "") => `[!stpf=url=https://steamprofiler.org/api/bars.svg${query}]`;
 
 test("a tag is read out of the text around it", () => {
   const bio = `hey\n${card("?theme=steam")}\nthanks for reading`;
@@ -37,9 +37,9 @@ test("only our own origin is accepted", () => {
     // http is not https, and a downgrade is a request in the clear.
     "http://steamprofiler.org",
   ]) {
-    assert.equal(tag.parse(`${origin}/bars.svg?q=x`), null, origin);
+    assert.equal(tag.parse(`${origin}/api/bars.svg?q=x`), null, origin);
   }
-  assert.equal(tag.parse("https://steamprofiler.org/bars.svg").kind, "bars");
+  assert.equal(tag.parse("https://steamprofiler.org/api/bars.svg").kind, "bars");
 });
 
 test("only the endpoints that draw a card are accepted", () => {
@@ -83,7 +83,7 @@ test("a card can still be asked for no signature at all", () => {
 });
 
 test("the second profile on a versus card survives", () => {
-  const read = tag.read(`[!stpf=url=https://steamprofiler.org/versus.svg?vs=gaben]`, OWNER);
+  const read = tag.read(`[!stpf=url=https://steamprofiler.org/api/versus.svg?vs=gaben]`, OWNER);
   assert.equal(read.kind, "versus");
   assert.equal(new URL(read.href).searchParams.get("vs"), "gaben");
 });
@@ -95,10 +95,10 @@ test("the request says it is going inside Steam", () => {
 });
 
 test("a badge with a custom label is reported as refused", () => {
-  const read = tag.read(`[!stpf=url=https://steamprofiler.org/badge.svg?label=cs.money]`, OWNER);
+  const read = tag.read(`[!stpf=url=https://steamprofiler.org/api/badge.svg?label=cs.money]`, OWNER);
   assert.equal(read.refused, "cardLabel");
   // A badge without one is an ordinary badge.
-  assert.equal(tag.read(`[!stpf=url=https://steamprofiler.org/badge.svg]`, OWNER).refused, null);
+  assert.equal(tag.read(`[!stpf=url=https://steamprofiler.org/api/badge.svg]`, OWNER).refused, null);
   // And the same parameter on a card that has no custom label is not a refusal,
   // it is just a parameter the server will ignore.
   assert.equal(tag.read(card("?label=x"), OWNER).refused, null);

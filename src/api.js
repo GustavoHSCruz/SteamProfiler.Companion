@@ -169,7 +169,7 @@ export function normalizeCompanionProfile(payload, expectedAppid, expectedSteamI
    drift out of step with src/tag.js. */
 export function cardTextUrl(href) {
   const url = new URL(String(href ?? ""));
-  if (url.origin !== API_ORIGIN || url.pathname !== "/bars.txt") {
+  if (url.origin !== API_ORIGIN || url.pathname !== "/api/bars.txt") {
     throw new TypeError("Invalid card URL");
   }
   return url.href;

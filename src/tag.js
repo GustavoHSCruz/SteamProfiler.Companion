@@ -34,13 +34,16 @@ var SteamProfilerTag = (() => {
   "use strict";
 
   const ORIGIN = "https://steamprofiler.org";
+  /* Under /api/, which is where nginx publishes them: the handler inside sees
+     /bars.svg because `location /api/` strips the prefix on the way through,
+     but nothing outside the server ever gets to use the short form. */
   const KINDS = Object.freeze({
-    "/bars.svg": "bars",
-    "/banner.svg": "banner",
-    "/badge.svg": "badge",
-    "/artwork.svg": "artwork",
-    "/versus.svg": "versus",
-    "/bars.txt": "text",
+    "/api/bars.svg": "bars",
+    "/api/banner.svg": "banner",
+    "/api/badge.svg": "badge",
+    "/api/artwork.svg": "artwork",
+    "/api/versus.svg": "versus",
+    "/api/bars.txt": "text",
   });
   /* A URL has no spaces and no closing bracket, so the tag ends where one of
      those does. Case-insensitive because somebody will type STPF. */
