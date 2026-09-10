@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SteamProfiler Companion</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="options">
+  <main class="options-card">
+    <header class="brand"><span>SP</span><div><b>SteamProfiler</b><small>Companion</small></div></header>
+    <p class="eyebrow" data-i18n="settings"></p>
+    <h1 data-i18n="settingsTitle"></h1>
+    <p class="intro" data-i18n="settingsIntro"></p>
+    <div class="settings-list">
+      <label class="switch-row"><span><b data-i18n="extensionEnabled"></b><small data-i18n="extensionEnabledHelp"></small></span><input id="enabled" type="checkbox" role="switch"></label>
+      <label class="switch-row"><span><b data-i18n="statsEnabled"></b><small data-i18n="statsEnabledHelp"></small></span><input id="showStats" type="checkbox" role="switch"></label>
+      <label class="switch-row"><span><b data-i18n="trailerEnabled"></b><small data-i18n="trailerEnabledHelp"></small></span><input id="showTrailer" type="checkbox" role="switch"></label>
+      <label class="select-row"><span><b data-i18n="language"></b><small data-i18n="languageHelp"></small></span><select id="language"><option value="auto" data-i18n="languageAuto"></option><option value="en">English</option><option value="pt">Português</option><option value="ru">Русский</option></select></label>
+    </div>
+    <p id="saved" class="saved" role="status" aria-live="polite"></p>
+    <footer><a href="https://steamprofiler.org/" target="_blank" rel="noopener noreferrer">steamprofiler.org</a></footer>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>

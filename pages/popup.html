@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SteamProfiler Companion</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="popup">
+  <header class="brand"><span>SP</span><div><b>SteamProfiler</b><small>Companion</small></div></header>
+  <main>
+    <label class="switch-row"><span><b data-i18n="extensionEnabled"></b><small data-i18n="extensionEnabledHelp"></small></span><input id="enabled" type="checkbox" role="switch"></label>
+    <label class="switch-row"><span><b data-i18n="trailerEnabled"></b><small data-i18n="trailerEnabledHelp"></small></span><input id="showTrailer" type="checkbox" role="switch"></label>
+    <a id="game-link" class="primary hidden" target="_blank" rel="noopener noreferrer" data-i18n="openCurrentGame"></a>
+    <button id="options" class="text-button" type="button" data-i18n="moreSettings"></button>
+  </main>
+  <footer><a href="https://steamprofiler.org/" target="_blank" rel="noopener noreferrer">steamprofiler.org</a></footer>
+  <script src="popup.js"></script>
+</body>
+</html>
