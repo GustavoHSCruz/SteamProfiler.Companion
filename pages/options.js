@@ -20,6 +20,20 @@
     }
   });
 
+  // The popup carries three of these switches, so a change made there has to
+  // land here while this page is open. The focused control is left alone: a
+  // value arriving under somebody's cursor while they are still typing their
+  // SteamID would fight them for the field.
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync") return;
+    for (const control of controls) {
+      if (!(control.id in changes) || control === document.activeElement) continue;
+      const value = changes[control.id].newValue ?? DEFAULTS[control.id];
+      if (control.type === "checkbox") control.checked = Boolean(value);
+      else control.value = value;
+    }
+  });
+
   let timer;
   for (const control of controls) {
     control.addEventListener("change", () => {

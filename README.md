@@ -29,7 +29,7 @@ npm run build
 ```
 
 That produces both an unpacked directory and
-`dist/steamprofiler-companion-0.2.0.zip`.
+`dist/steamprofiler-companion-0.2.1.zip`.
 
 In Chrome, open `chrome://extensions`, enable Developer mode, choose **Load
 unpacked**, and select the unpacked directory inside `dist/`. In Firefox, open
@@ -75,7 +75,9 @@ npm run build
 `npm run check` parses the manifest and locale files, checks every JavaScript
 file, verifies every manifest asset exists and rejects remote scripts or
 dynamic code. `npm test` exercises appid, URL, response validation and the
-credential-free request contract.
+credential-free request contract, and runs the popup and the options page
+against a stub `chrome` and DOM, so a preference that is stored and then drawn
+in the wrong position fails here rather than in somebody's browser.
 
 Source responsibilities:
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SteamProfiler Companion",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "SteamProfiler insights directly on Steam store pages.",
   "default_locale": "en",
   "icons": {

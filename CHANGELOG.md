@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 - 2026-09-10
+
+- Fix "Use my profile" appearing off in the toolbar popup after being enabled,
+  which turned the next click on it into switching the feature off.
+- Keep the popup and the options page in step while both are open.
+- Cover both pages with tests that run them against a stub browser.
+
 ## 0.2.0 - 2026-09-10
 
 - Compare a bounded sample of the latest reviews with the all-time rating.
