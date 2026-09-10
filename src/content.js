@@ -187,23 +187,12 @@
     return section;
   }
 
+  /* Whoever is signed in, out of what Steam already put on the page. The work
+     is in src/identity.js, which the manifest loads first: it is testable
+     without a browser, and it is where the reasons are written down for why
+     only the header is trusted for other people's ids. */
   function detectedSteamId(manual) {
-    if (/^7656119\d{10}$/.test(String(manual || "").trim())) return String(manual).trim();
-    const profileLinks = document.querySelectorAll(
-      "#global_actions a[href*='steamcommunity.com/profiles/'], #global_header a[href*='steamcommunity.com/profiles/']",
-    );
-    for (const link of profileLinks) {
-      const match = link.href.match(/steamcommunity\.com\/profiles\/(7656119\d{10})/);
-      if (match) return match[1];
-    }
-    const mini = document.querySelector(
-      "#global_actions [data-miniprofile], #global_header [data-miniprofile]",
-    );
-    const account = mini?.getAttribute("data-miniprofile");
-    if (/^[1-9]\d{0,9}$/.test(account || "")) {
-      return (76561197960265728n + BigInt(account)).toString();
-    }
-    return null;
+    return SteamProfilerIdentity.detect(document, manual);
   }
 
   function putBeforeActions(root, section) {

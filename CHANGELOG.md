@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2 - 2026-09-10
+
+- Find the signed-in reader on accounts that have a custom Steam URL, which
+  never appear as `/profiles/<id>` in the page header.
+- Read the account id Steam still writes into its own pages, as text, instead
+  of the `g_steamID` it stopped writing.
+- Keep other people's ids out: profile links and miniprofile ids are read from
+  the site header only, never from the page at large.
+
 ## 0.2.1 - 2026-09-10
 
 - Fix "Use my profile" appearing off in the toolbar popup after being enabled,

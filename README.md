@@ -29,7 +29,7 @@ npm run build
 ```
 
 That produces both an unpacked directory and
-`dist/steamprofiler-companion-0.2.1.zip`.
+`dist/steamprofiler-companion-0.2.2.zip`.
 
 In Chrome, open `chrome://extensions`, enable Developer mode, choose **Load
 unpacked**, and select the unpacked directory inside `dist/`. In Firefox, open
@@ -83,6 +83,9 @@ Source responsibilities:
 
 - `src/content.js` and `src/content.css`: Steam page integration and trailer
   overlay.
+- `src/identity.js`: who is reading the page, and why only the site header is
+  trusted for anybody's id. Loaded before the content script, and a plain
+  script rather than a module because a content script cannot import one.
 - `src/background.js`: cross-origin requests, language choice and short cache.
 - `src/api.js`: the testable versioned API adapter and trust boundary.
 - `pages/`: toolbar popup and preferences.
