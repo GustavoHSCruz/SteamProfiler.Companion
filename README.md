@@ -1,8 +1,10 @@
 # SteamProfiler Companion
 
 SteamProfiler information where a Steam shopper can use it: directly on each
-game's store page. The first release adds a compact panel with current players,
-review totals, release date, a complete-analysis link and an on-demand trailer.
+game's store page. It compares recent and lifetime reviews, shows official game
+activity, suggests who the game may suit and keeps the complete analysis one
+click away. An opt-in panel can also show the viewer's hours and achievement
+progress for that game.
 
 The page for it on the site is <https://steamprofiler.org/extension>, which is
 where a reader who is not going to clone a repository is sent.
@@ -14,8 +16,8 @@ The extension is deliberately small:
 - It runs only on `https://store.steampowered.com/app/*`.
 - It asks only for `storage`, `activeTab` and access to the public
   `steamprofiler.org/api/*` endpoint.
-- It never reads Steam cookies, account details, browsing history or profile
-  data.
+- It never reads Steam cookies, credentials or browsing history. Personal
+  progress is disabled by default and uses only a public SteamID after consent.
 
 ## Try it locally
 
@@ -27,7 +29,7 @@ npm run build
 ```
 
 That produces both an unpacked directory and
-`dist/steamprofiler-companion-0.1.0.zip`.
+`dist/steamprofiler-companion-0.2.0.zip`.
 
 In Chrome, open `chrome://extensions`, enable Developer mode, choose **Load
 unpacked**, and select the unpacked directory inside `dist/`. In Firefox, open
@@ -37,7 +39,8 @@ select its `manifest.json`.
 Then visit a game such as
 <https://store.steampowered.com/app/620/Portal_2/>. A SteamProfiler panel appears
 below the purchase area. The toolbar popup can disable the panel or trailer;
-the full options page also controls public metrics and catalogue language.
+the full options page also controls public metrics, catalogue language and the
+optional personal game panel.
 
 ## Architecture
 
@@ -46,6 +49,7 @@ Steam store page
   └─ content script: draws the isolated `spc-` panel
        └─ extension service worker: validates and caches requests
             └─ GET https://steamprofiler.org/api/companion?appid=…&l=…
+            └─ optional GET /api/companion/profile?appid=…&id=…
 ```
 
 The background boundary is intentional. Store-page JavaScript never receives
@@ -57,6 +61,8 @@ the response.
 [SteamProfiler.Api](https://github.com/GustavoHSCruz/SteamProfiler.Api). A cold
 game may answer `pending`; the content script waits for the advertised cache
 window and retries once. `absent` is distinct from a temporary network error.
+The personal contract returns only this game's hours and compact achievement
+progress. Its request always uses `credentials: omit`.
 
 ## Development
 
@@ -83,8 +89,9 @@ Source responsibilities:
 ## Privacy
 
 The extension sends the Steam appid already present in the open page URL and a
-catalogue language to `steamprofiler.org`. It does not collect personal data or
-analytics. See [PRIVACY.md](PRIVACY.md) for the store-facing disclosure.
+catalogue language to `steamprofiler.org`. When personal progress is explicitly
+enabled, it also sends a public SteamID. It has no analytics. See
+[PRIVACY.md](PRIVACY.md) for the store-facing disclosure.
 
 ## License and names
 

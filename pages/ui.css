@@ -30,7 +30,8 @@ footer a { color: #ffb454; font-size: 11px; font-weight: 700; text-decoration: n
 h1 { margin-top: 0; margin-bottom: 10px; font-size: clamp(28px, 5vw, 44px); }
 .intro { max-width: 600px; color: #aaa3b4; line-height: 1.55; }
 .settings-list { margin-top: 30px; margin-bottom: 20px; }
-select { min-width: 150px; padding: 9px; color: #f4f1eb; background: #25212b; border: 1px solid #4a4458; }
+select, input[type="text"] { min-width: 150px; padding: 9px; color: #f4f1eb; background: #25212b; border: 1px solid #4a4458; }
+input[type="text"] { width: min(230px, 48%); font-family: monospace; }
 .saved { min-height: 20px; color: #ffb454; font-size: 12px; }
 .options-card footer { margin-top: 24px; padding: 18px 34px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

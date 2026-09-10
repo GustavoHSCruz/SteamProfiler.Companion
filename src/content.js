@@ -2,8 +2,16 @@
   "use strict";
 
   const ROOT_ID = "steamprofiler-companion";
-  const DEFAULTS = { enabled: true, showStats: true, showTrailer: true, language: "auto" };
+  const DEFAULTS = {
+    enabled: true,
+    showStats: true,
+    showTrailer: true,
+    useProfile: false,
+    steamId: "",
+    language: "auto",
+  };
   let pendingRetry = null;
+  let renderSequence = 0;
 
   const t = (key, substitutions) => chrome.i18n.getMessage(key, substitutions) || key;
   const node = (tag, className, text) => {
@@ -20,6 +28,15 @@
 
   function number(value) {
     return new Intl.NumberFormat().format(value);
+  }
+
+  function decimal(value) {
+    return new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 }).format(value);
+  }
+
+  function daysSince(seconds) {
+    if (!Number.isInteger(seconds)) return null;
+    return Math.max(0, Math.floor((Date.now() - seconds * 1000) / 86_400_000));
   }
 
   function message(payload) {
@@ -100,6 +117,151 @@
     return item;
   }
 
+  function insight(title, className = "") {
+    const section = node("section", `spc-insight ${className}`.trim());
+    section.append(node("h3", "spc-insight-title", title));
+    return section;
+  }
+
+  function reviewInsight(reviews) {
+    if (!reviews?.total || reviews.positive_pct == null) return null;
+    const section = insight(t("reviewXray"), "spc-review-insight");
+    const values = node("div", "spc-review-values");
+    values.append(metric(`${decimal(reviews.positive_pct)}%`, t("reviewAllTime")));
+    const recent = reviews.recent;
+    if (recent?.total && recent.positive_pct != null) {
+      values.append(metric(`${decimal(recent.positive_pct)}%`, t("reviewRecent")));
+      const delta = Math.round((recent.positive_pct - reviews.positive_pct) * 10) / 10;
+      const direction = delta >= 3 ? "reviewImproving" : delta <= -3 ? "reviewFalling" : "reviewStable";
+      const verdict = node("p", `spc-verdict ${delta >= 3 ? "spc-good" : delta <= -3 ? "spc-warn" : ""}`,
+        t(direction, decimal(Math.abs(delta))));
+      section.append(values, verdict);
+      section.append(node("p", "spc-evidence", t("reviewVolume", number(recent.total))));
+    } else {
+      section.append(values, node("p", "spc-evidence", t("reviewNoRecent")));
+    }
+    return section;
+  }
+
+  function activityInsight(activity) {
+    const age = daysSince(activity?.latest_news_at);
+    if (age == null) return null;
+    const section = insight(t("activityTitle"), "spc-activity-insight");
+    let status = "activityLongQuiet";
+    if (age <= 45) status = "activityActive";
+    else if (age <= 180) status = "activityMaintained";
+    else if (age <= 365) status = "activityQuiet";
+    const verdict = node("p", `spc-verdict ${age <= 180 ? "spc-good" : age > 365 ? "spc-warn" : ""}`,
+      t(status));
+    section.append(verdict, node("p", "spc-evidence", age === 0
+      ? t("activityToday") : t("activityDays", number(age))));
+    if (activity.latest_news_title) {
+      const label = activity.latest_news_url
+        ? node("a", "spc-news-link", activity.latest_news_title)
+        : node("span", "spc-news-link", activity.latest_news_title);
+      if (activity.latest_news_url) {
+        label.href = activity.latest_news_url;
+        label.target = "_blank";
+        label.rel = "noopener noreferrer";
+      }
+      section.append(label);
+    }
+    section.append(node("p", "spc-fineprint", t("activityCaveat")));
+    return section;
+  }
+
+  function audienceInsight(data) {
+    const categories = new Set(data.game.categories || []);
+    const labels = [];
+    if (categories.has(9) || categories.has(38)) labels.push(t("audienceCoop"));
+    if (categories.has(1) || categories.has(36)) labels.push(t("audienceMultiplayer"));
+    if (categories.has(2)) labels.push(t("audienceSolo"));
+    if (data.game.achievements >= 20) labels.push(t("audienceAchievements"));
+    const activityAge = daysSince(data.activity?.latest_news_at);
+    if (activityAge != null && activityAge <= 90) labels.push(t("audienceLiving"));
+    if (!labels.length) return null;
+    const section = insight(t("audienceTitle"), "spc-audience-insight");
+    const tags = node("div", "spc-tags");
+    for (const label of [...new Set(labels)].slice(0, 4)) tags.append(node("span", "spc-tag", label));
+    section.append(tags);
+    return section;
+  }
+
+  function detectedSteamId(manual) {
+    if (/^7656119\d{10}$/.test(String(manual || "").trim())) return String(manual).trim();
+    const profileLinks = document.querySelectorAll(
+      "#global_actions a[href*='steamcommunity.com/profiles/'], #global_header a[href*='steamcommunity.com/profiles/']",
+    );
+    for (const link of profileLinks) {
+      const match = link.href.match(/steamcommunity\.com\/profiles\/(7656119\d{10})/);
+      if (match) return match[1];
+    }
+    const mini = document.querySelector(
+      "#global_actions [data-miniprofile], #global_header [data-miniprofile]",
+    );
+    const account = mini?.getAttribute("data-miniprofile");
+    if (/^[1-9]\d{0,9}$/.test(account || "")) {
+      return (76561197960265728n + BigInt(account)).toString();
+    }
+    return null;
+  }
+
+  function putBeforeActions(root, section) {
+    const actions = root.querySelector(".spc-actions");
+    if (actions) root.insertBefore(section, actions);
+    else root.append(section);
+  }
+
+  function renderPersonal(root, profile) {
+    const old = root.querySelector(".spc-personal");
+    const section = insight(t("personalTitle"), "spc-personal");
+    if (profile.state === "absent") {
+      section.append(node("p", "spc-verdict", t("personalNotOwned")));
+    } else {
+      const values = node("div", "spc-personal-values");
+      if (profile.hours != null) values.append(metric(`${decimal(profile.hours)}h`, t("personalHours")));
+      if (profile.achievements?.total) {
+        values.append(metric(
+          `${number(profile.achievements.unlocked || 0)}/${number(profile.achievements.total)}`,
+          t("personalAchievements"),
+        ));
+        if (profile.achievements.completion != null) {
+          values.append(metric(`${decimal(profile.achievements.completion)}%`, t("personalCompletion")));
+        }
+      }
+      section.append(values);
+      const next = profile.achievements?.easiest_missing;
+      if (next?.name) section.append(node("p", "spc-next", t("personalNext", next.name)));
+    }
+    if (old) old.replaceWith(section);
+    else putBeforeActions(root, section);
+  }
+
+  async function loadPersonal(root, appid, options, sequence) {
+    if (!options.useProfile) return;
+    const steamid = detectedSteamId(options.steamId);
+    const waiting = insight(t("personalTitle"), "spc-personal");
+    if (!steamid) {
+      waiting.append(node("p", "spc-verdict", t("personalNoId")),
+        node("p", "spc-fineprint", t("personalNoCookies")));
+      putBeforeActions(root, waiting);
+      return;
+    }
+    waiting.append(node("p", "spc-evidence", t("personalLoading")));
+    putBeforeActions(root, waiting);
+    try {
+      const response = await message({ type: "SP_GET_PROFILE_GAME", appid, steamid });
+      if (sequence !== renderSequence || !root.isConnected) return;
+      if (!response?.ok) throw new Error(response?.error || "Request failed");
+      renderPersonal(root, response.data);
+    } catch {
+      if (sequence !== renderSequence || !root.isConnected) return;
+      waiting.replaceChildren(node("h3", "spc-insight-title", t("personalTitle")),
+        node("p", "spc-verdict spc-warn", t("personalUnavailable")),
+        node("p", "spc-fineprint", t("personalPrivate")));
+    }
+  }
+
   function renderData(root, data, options) {
     root.replaceChildren();
     const header = node("header", "spc-head");
@@ -138,6 +300,12 @@
       if (data.reviews?.total != null) metrics.append(metric(number(data.reviews.total), t("reviews")));
       if (data.game.released) metrics.append(metric(data.game.released, t("release")));
       if (metrics.childElementCount) root.append(metrics);
+
+      const insights = node("div", "spc-insights");
+      for (const item of [reviewInsight(data.reviews), activityInsight(data.activity), audienceInsight(data)]) {
+        if (item) insights.append(item);
+      }
+      if (insights.childElementCount) root.append(insights);
     }
 
     const actions = node("div", "spc-actions");
@@ -170,6 +338,7 @@
   }
 
   async function boot() {
+    const sequence = ++renderSequence;
     const appid = appidFromLocation();
     if (!appid) return;
     const options = await settings();
@@ -193,6 +362,7 @@
       if (!response?.ok) throw new Error(response?.error || "Request failed");
       root.classList.remove("spc-loading");
       renderData(root, response.data, options);
+      loadPersonal(root, appid, options, sequence);
       if (response.data.state === "pending" && !pendingRetry) {
         pendingRetry = window.setTimeout(() => {
           pendingRetry = null;

@@ -13,6 +13,18 @@ export function companionUrl(appid, language = "en") {
   return `${API_ORIGIN}/api/companion?appid=${id}&l=${lang}`;
 }
 
+export function normalizeSteamId(value) {
+  const raw = String(value ?? "").trim();
+  if (!/^7656119\d{10}$/.test(raw)) throw new TypeError("Invalid SteamID64");
+  return raw;
+}
+
+export function companionProfileUrl(appid, steamid) {
+  const id = normalizeAppid(appid);
+  const who = normalizeSteamId(steamid);
+  return `${API_ORIGIN}/api/companion/profile?appid=${id}&id=${who}`;
+}
+
 function safeHttps(value) {
   if (!value) return null;
   try {
@@ -34,6 +46,28 @@ function mediaOf(media) {
     mp4: list(media.mp4),
     webm: list(media.webm),
   };
+}
+
+function idList(value) {
+  return Array.isArray(value)
+    ? value.filter((item) => Number.isInteger(item) && item >= 0).slice(0, 100)
+    : [];
+}
+
+function reviewOf(value, withRecent = false) {
+  if (!value || typeof value !== "object") return null;
+  const total = Number.isInteger(value.total) && value.total >= 0 ? value.total : null;
+  const positive = Number.isInteger(value.positive) && value.positive >= 0 ? value.positive : null;
+  const result = {
+    total,
+    positive,
+    positive_pct: Number.isFinite(value.positive_pct)
+      ? Math.max(0, Math.min(100, value.positive_pct)) : null,
+    description: typeof value.description === "string"
+      ? value.description.slice(0, 100) : null,
+  };
+  if (withRecent) result.recent = reviewOf(value.recent, false);
+  return result;
 }
 
 export function normalizeCompanion(payload, expectedAppid) {
@@ -62,17 +96,21 @@ export function normalizeCompanion(payload, expectedAppid) {
       image: safeHttps(game.image),
       platforms: game.platforms && typeof game.platforms === "object"
         ? game.platforms : {},
+      categories: idList(game.categories),
+      genres: idList(game.genres),
+      achievements: Number.isInteger(game.achievements) && game.achievements >= 0
+        ? game.achievements : null,
     },
-    reviews: reviews ? {
-      total: Number.isInteger(reviews.total) ? reviews.total : null,
-      positive: Number.isInteger(reviews.positive) ? reviews.positive : null,
-      positive_pct: Number.isFinite(reviews.positive_pct)
-        ? Math.max(0, Math.min(100, reviews.positive_pct)) : null,
-      description: typeof reviews.description === "string"
-        ? reviews.description.slice(0, 100) : null,
-    } : null,
+    reviews: reviewOf(reviews, true),
     players: Number.isInteger(payload.players) && payload.players >= 0
       ? payload.players : null,
+    activity: payload.activity && typeof payload.activity === "object" ? {
+      latest_news_at: Number.isInteger(payload.activity.latest_news_at)
+        ? payload.activity.latest_news_at : null,
+      latest_news_title: typeof payload.activity.latest_news_title === "string"
+        ? payload.activity.latest_news_title.slice(0, 300) : null,
+      latest_news_url: safeHttps(payload.activity.latest_news_url),
+    } : null,
     trailer: {
       state: ["pending", "ready", "absent"].includes(trailer.state)
         ? trailer.state : "absent",
@@ -84,6 +122,43 @@ export function normalizeCompanion(payload, expectedAppid) {
   };
 }
 
+function achievementOf(value) {
+  if (!value || typeof value !== "object") return null;
+  const compact = (item) => item && typeof item === "object" ? {
+    name: typeof item.name === "string" ? item.name.slice(0, 300) : null,
+    rarity: Number.isFinite(item.rarity) ? Math.max(0, Math.min(100, item.rarity)) : null,
+  } : null;
+  return {
+    unlocked: Number.isInteger(value.unlocked) ? value.unlocked : null,
+    total: Number.isInteger(value.total) ? value.total : null,
+    completion: Number.isFinite(value.completion)
+      ? Math.max(0, Math.min(100, value.completion)) : null,
+    missing: Number.isInteger(value.missing) ? value.missing : null,
+    easiest_missing: compact(value.easiest_missing),
+    hardest_missing: compact(value.hardest_missing),
+  };
+}
+
+export function normalizeCompanionProfile(payload, expectedAppid, expectedSteamId) {
+  const appid = normalizeAppid(expectedAppid);
+  const steamid = normalizeSteamId(expectedSteamId);
+  if (!payload || payload.version !== 1 || payload.appid !== appid
+      || payload.steamid !== steamid || !["ready", "absent"].includes(payload.state)) {
+    throw new TypeError("Unsupported companion profile response");
+  }
+  return {
+    version: 1,
+    appid,
+    steamid,
+    state: payload.state,
+    hours: Number.isFinite(payload.hours) && payload.hours >= 0 ? payload.hours : null,
+    hours_2weeks: Number.isFinite(payload.hours_2weeks) && payload.hours_2weeks >= 0
+      ? payload.hours_2weeks : null,
+    last_played: typeof payload.last_played === "string" ? payload.last_played.slice(0, 20) : null,
+    achievements: achievementOf(payload.achievements),
+  };
+}
+
 export async function fetchCompanion(appid, language, fetcher = fetch) {
   const response = await fetcher(companionUrl(appid, language), {
     headers: { Accept: "application/json" },
@@ -91,4 +166,13 @@ export async function fetchCompanion(appid, language, fetcher = fetch) {
   });
   if (!response.ok) throw new Error(`SteamProfiler API returned ${response.status}`);
   return normalizeCompanion(await response.json(), appid);
+}
+
+export async function fetchCompanionProfile(appid, steamid, fetcher = fetch) {
+  const response = await fetcher(companionProfileUrl(appid, steamid), {
+    headers: { Accept: "application/json" },
+    credentials: "omit",
+  });
+  if (!response.ok) throw new Error(`SteamProfiler API returned ${response.status}`);
+  return normalizeCompanionProfile(await response.json(), appid, steamid);
 }

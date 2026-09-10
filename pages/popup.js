@@ -1,5 +1,5 @@
 (() => {
-  const DEFAULTS = { enabled: true, showTrailer: true };
+  const DEFAULTS = { enabled: true, useProfile: false, showTrailer: true };
   document.documentElement.lang = chrome.i18n.getUILanguage().replace("_", "-");
   for (const element of document.querySelectorAll("[data-i18n]")) {
     element.textContent = chrome.i18n.getMessage(element.dataset.i18n);
