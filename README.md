@@ -1,7 +1,7 @@
 # SteamProfiler Companion
 
 SteamProfiler information where a Steam shopper can use it: directly on each
-game's store page. It compares recent and lifetime reviews, shows official game
+game's store page. It compares the latest and lifetime reviews, shows official game
 activity, suggests who the game may suit and keeps the complete analysis one
 click away. An opt-in panel can also show the viewer's hours and achievement
 progress for that game.

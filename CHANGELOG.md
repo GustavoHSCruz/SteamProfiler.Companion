@@ -2,7 +2,7 @@
 
 ## 0.2.0 - 2026-09-10
 
-- Compare the last 30 days of reviews with the game's all-time rating.
+- Compare a bounded sample of the latest reviews with the all-time rating.
 - Show recent official activity with a clear news-versus-update caveat.
 - Suggest the kinds of player a game may suit from its public store features.
 - Add an explicit opt-in personal panel with hours and achievement progress.
