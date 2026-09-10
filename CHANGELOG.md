@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.0 - 2026-09-10
+
+- Draw the card a Steam profile asks for on the profile itself. Put
+  `[!stpf=url=https://steamprofiler.org/bars.svg?...]` in the About Me or the
+  info box and the picture that URL names appears on the page, always current.
+  Steam cannot render it for anybody, so it shows only for readers who have
+  this extension.
+- Read the tag out of the page the browser already loaded, never by asking
+  Steam for the profile again.
+- Point only at steamprofiler.org. An address anywhere else is ignored, so no
+  server chosen by a profile ever hears from a reader's browser.
+- Draw the card for the profile it is on: the card's `q` is set to the profile
+  being viewed, whatever the tag says.
+- Drop typed text before the request. A signature comes from the persona name
+  Steam is already showing on the same page, and a badge carrying its own label
+  is not drawn - with a message for the person who wrote the tag, and nothing at
+  all for anyone else.
+- Say whose card it is: the panel carries the name and the disclaimer, and the
+  mark on the picture can no longer be turned off inside Steam.
+
 ## 0.2.3 - 2026-09-10
 
 - Size each row of figures to how many it has, instead of leaving the grid's

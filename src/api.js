@@ -159,6 +159,33 @@ export function normalizeCompanionProfile(payload, expectedAppid, expectedSteamI
   };
 }
 
+/* The Unicode chart a profile can ask for, which is the one card that is text
+   rather than a picture. Everything else is an <img> the page loads by itself
+   and never passes through here.
+
+   The URL arrives from a content script, so it is checked again rather than
+   trusted: a message is not proof of where it came from. Only this one path is
+   allowed, which also means there is no second copy of the endpoint list to
+   drift out of step with src/tag.js. */
+export function cardTextUrl(href) {
+  const url = new URL(String(href ?? ""));
+  if (url.origin !== API_ORIGIN || url.pathname !== "/bars.txt") {
+    throw new TypeError("Invalid card URL");
+  }
+  return url.href;
+}
+
+export async function fetchCardText(href, fetcher = fetch) {
+  const response = await fetcher(cardTextUrl(href), {
+    headers: { Accept: "text/plain" },
+    credentials: "omit",
+  });
+  if (!response.ok) throw new Error(`SteamProfiler API returned ${response.status}`);
+  // A chart is fifteen short lines at the very most. The cap is what stops an
+  // unexpected answer from becoming a wall of text on somebody's profile.
+  return (await response.text()).slice(0, 4000);
+}
+
 export async function fetchCompanion(appid, language, fetcher = fetch) {
   const response = await fetcher(companionUrl(appid, language), {
     headers: { Accept: "application/json" },

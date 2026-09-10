@@ -6,6 +6,13 @@ activity, suggests who the game may suit and keeps the complete analysis one
 click away. An opt-in panel can also show the viewer's hours and achievement
 progress for that game.
 
+On a Steam profile it draws the card that profile asked for. A tag in the
+About Me or the info box, `[!stpf=url=https://steamprofiler.org/bars.svg?...]`,
+names one of the site's own embeds, and the extension puts that picture on the
+page. Steam itself cannot render it, so it appears only for readers who have
+the extension. The tag may name no address other than steamprofiler.org, and
+the card is always drawn for the profile it sits on.
+
 The page for it on the site is <https://steamprofiler.org/extension>, which is
 where a reader who is not going to clone a repository is sent.
 
@@ -13,7 +20,8 @@ The extension is deliberately small:
 
 - Chrome and Firefox use the same Manifest V3 source tree.
 - No framework, bundler, runtime dependency or remotely hosted code.
-- It runs only on `https://store.steampowered.com/app/*`.
+- It runs only on `https://store.steampowered.com/app/*` and on Steam
+  profile pages, `https://steamcommunity.com/id/*` and `/profiles/*`.
 - It asks only for `storage`, `activeTab` and access to the public
   `steamprofiler.org/api/*` endpoint.
 - It never reads Steam cookies, credentials or browsing history. Personal

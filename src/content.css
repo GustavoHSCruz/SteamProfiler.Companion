@@ -96,3 +96,65 @@ html.spc-modal-open { overflow: hidden !important; }
 @media (prefers-reduced-motion: reduce) {
   #steamprofiler-companion *, .spc-overlay * { scroll-behavior: auto !important; transition: none !important; }
 }
+
+/* ── The card a profile asked for ─────────────────────────────────────
+   Drawn on steamcommunity.com, next to Valve's own showcases, which is why it
+   does not borrow their frame: a reader has to be able to tell at a glance that
+   this panel is not one of Steam's. Same palette as the store panel above, one
+   size down, because here the picture is the content and the chrome is only
+   there to say whose it is. */
+#steamprofiler-card.spc-card {
+  --spc-accent: #ffb454;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  color: #f4f1eb;
+  background: #17141d;
+  border: 1px solid #4a4458;
+  border-left: 3px solid var(--spc-accent);
+  font-family: Arial, Helvetica, sans-serif;
+}
+#steamprofiler-card * { box-sizing: border-box; }
+.spc-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.spc-card-identity { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.spc-card-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 20px;
+  height: 20px;
+  color: #0b0a0e;
+  background: var(--spc-accent);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: -.5px;
+}
+.spc-card-name { color: #aaa3b4; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; }
+.spc-card-info {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  color: #aaa3b4;
+  background: transparent;
+  border: 1px solid #4a4458;
+  border-radius: 50%;
+  font: 700 11px Georgia, serif;
+  line-height: 1;
+  cursor: pointer;
+}
+.spc-card-info:hover { color: #0b0a0e; background: var(--spc-accent); border-color: var(--spc-accent); }
+/* A defined colour rather than an opacity: this sits on one flat panel, and a
+   faded 11px line has a contrast ratio nobody measured. */
+.spc-card-legal { margin: 8px 0 0; color: #98919f; font-size: 11px; line-height: 1.5; }
+.spc-card-art { display: block; max-width: 100%; height: auto; margin-top: 10px; }
+.spc-card-lines {
+  overflow-x: auto;
+  margin: 10px 0 0;
+  color: #d8d3e0;
+  font: 12px/1.45 "DejaVu Sans Mono", Consolas, monospace;
+  white-space: pre;
+}
+.spc-card-notice { margin-top: 10px; padding: 10px 12px; background: #131117; border: 1px solid #312d38; }
+.spc-card-notice strong { display: block; color: var(--spc-accent); font-size: 12px; }
+.spc-card-notice p { margin: 5px 0 0; color: #cfc9d8; font-size: 12px; line-height: 1.5; }

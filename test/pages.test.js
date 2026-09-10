@@ -76,6 +76,7 @@ const optionsElements = () => ({
   useProfile: checkbox("useProfile"),
   steamId: field("steamId"),
   showTrailer: checkbox("showTrailer"),
+  showProfileCards: checkbox("showProfileCards"),
   language: field("language", "auto"),
   saved: { id: "saved", textContent: "" },
 });

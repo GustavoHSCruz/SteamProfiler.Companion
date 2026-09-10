@@ -1,9 +1,9 @@
 {
   "name": "steamprofiler-companion",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Browser extension that adds SteamProfiler insights to Steam store pages.",
+  "description": "Browser extension that adds SteamProfiler insights to Steam store pages and cards to Steam profiles.",
   "scripts": {
     "check": "node tools/check.mjs && node --test",
     "build": "npm run check && node tools/build.mjs"

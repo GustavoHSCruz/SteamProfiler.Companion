@@ -217,5 +217,26 @@
   },
   "saved": {
     "message": "Сохранено"
+  },
+  "cardsEnabled": {
+    "message": "Карточки в профилях Steam"
+  },
+  "cardsEnabledHelp": {
+    "message": "Рисует карточку, которую профиль запросил тегом SteamProfiler. Её видят только те, у кого установлено это расширение."
+  },
+  "cardDisclaimer": {
+    "message": "Карточку нарисовал SteamProfiler, независимый любительский проект. Не связан с Valve Corporation и не одобрен ею. Steam и логотип Steam являются товарными знаками Valve Corporation."
+  },
+  "cardAbout": {
+    "message": "Об этой карточке"
+  },
+  "cardAlt": {
+    "message": "Карточка SteamProfiler для этого профиля."
+  },
+  "cardRefused": {
+    "message": "Эта карточка не нарисована"
+  },
+  "cardLabel": {
+    "message": "Значок со своим текстом внутри Steam не показывается. Уберите параметр label из тега, и он появится."
   }
 }

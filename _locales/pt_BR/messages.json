@@ -217,5 +217,26 @@
   },
   "saved": {
     "message": "Salvo"
+  },
+  "cardsEnabled": {
+    "message": "Cartões em perfis da Steam"
+  },
+  "cardsEnabledHelp": {
+    "message": "Desenha o cartão que o perfil pediu com uma tag do SteamProfiler. Só quem tem esta extensão enxerga."
+  },
+  "cardDisclaimer": {
+    "message": "Cartão desenhado pelo SteamProfiler, um projeto independente e sem fins comerciais. Não tem vínculo com a Valve Corporation, nem é endossado por ela. Steam e o logo da Steam são marcas da Valve Corporation."
+  },
+  "cardAbout": {
+    "message": "Sobre este cartão"
+  },
+  "cardAlt": {
+    "message": "Cartão do SteamProfiler para este perfil."
+  },
+  "cardRefused": {
+    "message": "Este cartão não foi desenhado"
+  },
+  "cardLabel": {
+    "message": "Badge com texto próprio não aparece dentro da Steam. Tire o parâmetro label da tag e ele volta a aparecer."
   }
 }

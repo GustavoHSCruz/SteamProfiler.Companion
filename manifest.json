@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "SteamProfiler Companion",
-  "version": "0.2.3",
-  "description": "SteamProfiler insights directly on Steam store pages.",
+  "version": "0.3.0",
+  "description": "SteamProfiler insights on Steam store pages, and profile cards on Steam profiles.",
   "default_locale": "en",
   "icons": {
     "16": "assets/icon-16.png",
@@ -33,6 +33,21 @@
       "js": [
         "src/identity.js",
         "src/content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://steamcommunity.com/id/*",
+        "https://steamcommunity.com/profiles/*"
+      ],
+      "css": [
+        "src/content.css"
+      ],
+      "js": [
+        "src/identity.js",
+        "src/tag.js",
+        "src/profile.js"
       ],
       "run_at": "document_idle"
     }

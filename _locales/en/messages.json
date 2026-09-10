@@ -217,5 +217,26 @@
   },
   "saved": {
     "message": "Saved"
+  },
+  "cardsEnabled": {
+    "message": "Cards on Steam profiles"
+  },
+  "cardsEnabledHelp": {
+    "message": "Draws the card a profile asked for with a SteamProfiler tag. Only people running this extension can see it."
+  },
+  "cardDisclaimer": {
+    "message": "Card drawn by SteamProfiler, an independent hobby project. Not affiliated with, endorsed by, or connected to Valve Corporation. Steam and the Steam logo are trademarks of Valve Corporation."
+  },
+  "cardAbout": {
+    "message": "About this card"
+  },
+  "cardAlt": {
+    "message": "SteamProfiler card for this profile."
+  },
+  "cardRefused": {
+    "message": "This card was not drawn"
+  },
+  "cardLabel": {
+    "message": "A badge with your own text is not shown inside Steam. Remove the label parameter from the tag and it will appear."
   }
 }
