@@ -65,7 +65,7 @@
   "moreSettings": { "message": "Mais configurações" },
   "settings": { "message": "Configurações" },
   "settingsTitle": { "message": "Deixe do seu jeito." },
-  "settingsIntro": { "message": "As preferências ficam no navegador. Por padrão, a extensão envia somente o appid e o idioma. Se você habilitar seu perfil, também envia seu SteamID público para ler o progresso daquele jogo — nunca cookies ou credenciais." },
+  "settingsIntro": { "message": "As preferências ficam no navegador. Por padrão, a extensão envia somente o appid e o idioma. Se você habilitar seu perfil, também envia seu SteamID público para ler o progresso daquele jogo - nunca cookies ou credenciais." },
   "language": { "message": "Idioma do catálogo" },
   "languageHelp": { "message": "Idioma solicitado à API pública." },
   "languageAuto": { "message": "Padrão do navegador" },

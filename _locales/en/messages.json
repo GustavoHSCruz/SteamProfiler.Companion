@@ -65,7 +65,7 @@
   "moreSettings": { "message": "More settings" },
   "settings": { "message": "Settings" },
   "settingsTitle": { "message": "Make it your companion." },
-  "settingsIntro": { "message": "Preferences stay in your browser. By default, the extension sends only the app id and language. If you enable your profile, it also sends your public SteamID to read progress for that game—never cookies or credentials." },
+  "settingsIntro": { "message": "Preferences stay in your browser. By default, the extension sends only the app id and language. If you enable your profile, it also sends your public SteamID to read progress for that game - never cookies or credentials." },
   "language": { "message": "Catalogue language" },
   "languageHelp": { "message": "Language requested from the public API." },
   "languageAuto": { "message": "Browser default" },
