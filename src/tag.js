@@ -45,9 +45,21 @@ var SteamProfilerTag = (() => {
     "/api/versus.svg": "versus",
     "/api/bars.txt": "text",
   });
-  /* A URL has no spaces and no closing bracket, so the tag ends where one of
-     those does. Case-insensitive because somebody will type STPF. */
-  const TAG = /\[!stpf=url=([^\]\s]+)\]/i;
+  /* Braces rather than square brackets, and forgiving about whitespace.
+
+     Steam's About Me and info box are parsed as BBCode, and BBCode owns the
+     square bracket. It does not recognise `[!stpf=...]`, and what it does with
+     something it does not recognise is neutralise it by padding: what somebody
+     pastes as `[!stpf=url=...]` is stored and drawn as `[ !stpf=url=... ]`.
+     The marker survives, which is the thing that had to be true, but it comes
+     back wearing spaces it was not given.
+
+     So the tag moved to braces, which BBCode has no claim on. The `\s*` on both
+     sides is the part that matters more, though: it is what keeps this working
+     if Steam decides to pad braces too, or pads them tomorrow, and it costs two
+     characters. The square form is still read, because it is what the first
+     people to try this pasted and there is no reason to break them. */
+  const TAG = /[[{]\s*!stpf=url=([^\s\]}]+)\s*[\]}]/i;
   const STEAMID64 = /^7656119\d{10}$/;
   /* The two parameters that carry text somebody typed. */
   const TYPED = ["label", "sign"];

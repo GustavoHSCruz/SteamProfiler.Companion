@@ -14,7 +14,7 @@ const tag = context.SteamProfilerTag;
 
 const OWNER = "76561198000000000";
 const OTHER = "76561198999999999";
-const card = (query = "") => `[!stpf=url=https://steamprofiler.org/api/bars.svg${query}]`;
+const card = (query = "") => `{!stpf=url=https://steamprofiler.org/api/bars.svg${query}}`;
 
 test("a tag is read out of the text around it", () => {
   const bio = `hey\n${card("?theme=steam")}\nthanks for reading`;
@@ -83,7 +83,7 @@ test("a card can still be asked for no signature at all", () => {
 });
 
 test("the second profile on a versus card survives", () => {
-  const read = tag.read(`[!stpf=url=https://steamprofiler.org/api/versus.svg?vs=gaben]`, OWNER);
+  const read = tag.read(`{!stpf=url=https://steamprofiler.org/api/versus.svg?vs=gaben}`, OWNER);
   assert.equal(read.kind, "versus");
   assert.equal(new URL(read.href).searchParams.get("vs"), "gaben");
 });
@@ -95,10 +95,10 @@ test("the request says it is going inside Steam", () => {
 });
 
 test("a badge with a custom label is reported as refused", () => {
-  const read = tag.read(`[!stpf=url=https://steamprofiler.org/api/badge.svg?label=cs.money]`, OWNER);
+  const read = tag.read(`{!stpf=url=https://steamprofiler.org/api/badge.svg?label=cs.money}`, OWNER);
   assert.equal(read.refused, "cardLabel");
   // A badge without one is an ordinary badge.
-  assert.equal(tag.read(`[!stpf=url=https://steamprofiler.org/api/badge.svg]`, OWNER).refused, null);
+  assert.equal(tag.read(`{!stpf=url=https://steamprofiler.org/api/badge.svg}`, OWNER).refused, null);
   // And the same parameter on a card that has no custom label is not a refusal,
   // it is just a parameter the server will ignore.
   assert.equal(tag.read(card("?label=x"), OWNER).refused, null);
@@ -111,7 +111,36 @@ test("a profile with no usable id draws nothing", () => {
 });
 
 test("a tag that is not a URL at all is ignored", () => {
-  assert.equal(tag.read("[!stpf=url=notaurl]", OWNER), null);
-  assert.equal(tag.read("[!stpf=url=javascript:alert(1)]", OWNER), null);
-  assert.equal(tag.read("[!stpf=url=data:text/html,x]", OWNER), null);
+  assert.equal(tag.read("{!stpf=url=notaurl}", OWNER), null);
+  assert.equal(tag.read("{!stpf=url=javascript:alert(1)}", OWNER), null);
+  assert.equal(tag.read("{!stpf=url=data:text/html,x}", OWNER), null);
+});
+
+test("the tag survives what Steam does to it", () => {
+  // Measured, not guessed: Steam parses the About Me and the info box as
+  // BBCode, and BBCode owns the square bracket. A marker it does not recognise
+  // is neutralised by padding, so `[!stpf=url=X]` is stored and drawn as
+  // `[ !stpf=url=X ]`. The braces are the answer to that; the tolerance is the
+  // answer to it happening again somewhere else.
+  const url = "https://steamprofiler.org/api/banner.svg?q=gordziilla&facts=hours,games";
+  for (const written of [
+    `{!stpf=url=${url}}`,
+    `{ !stpf=url=${url} }`,
+    `[!stpf=url=${url}]`,
+    `[ !stpf=url=${url} ]`,
+    `[\t!stpf=url=${url}\n]`,
+  ]) {
+    const read = tag.read(`about me\n${written}\nthanks`, OWNER);
+    assert.equal(read?.kind, "banner", written);
+    // The address itself comes through whole - the commas in `facts` included,
+    // which is the part a parser that escaped things would have eaten.
+    assert.equal(new URL(read.href).searchParams.get("facts"), "hours,games");
+  }
+});
+
+test("a marker that was never opened or never closed is not a tag", () => {
+  const url = "https://steamprofiler.org/api/bars.svg";
+  assert.equal(tag.read(`!stpf=url=${url}`, OWNER), null);
+  assert.equal(tag.read(`{!stpf=url=${url}`, OWNER), null);
+  assert.equal(tag.read(`!stpf=url=${url}}`, OWNER), null);
 });

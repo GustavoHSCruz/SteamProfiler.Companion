@@ -3,7 +3,7 @@
 ## 0.3.0 - 2026-09-10
 
 - Draw the card a Steam profile asks for on the profile itself. Put
-  `[!stpf=url=https://steamprofiler.org/bars.svg?...]` in the About Me or the
+  `{!stpf=url=https://steamprofiler.org/api/bars.svg?...}` in the About Me or the
   info box and the picture that URL names appears on the page, always current.
   Steam cannot render it for anybody, so it shows only for readers who have
   this extension.
@@ -19,6 +19,10 @@
   all for anyone else.
 - Say whose card it is: the panel carries the name and the disclaimer, and the
   mark on the picture can no longer be turned off inside Steam.
+- Read the marker in braces, and forgive whitespace inside it. Steam parses
+  these fields as BBCode, which owns the square bracket: a marker it does not
+  recognise comes back padded, so `[!stpf=url=X]` is stored as
+  `[ !stpf=url=X ]`. The square form is still read.
 - Let a card be asked for unsigned with `sign=none`. Everything else typed into
   that field is dropped, but the off switch is not writing: it draws nothing, so
   there is nothing in it to publish.

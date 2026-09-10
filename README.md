@@ -7,7 +7,7 @@ click away. An opt-in panel can also show the viewer's hours and achievement
 progress for that game.
 
 On a Steam profile it draws the card that profile asked for. A tag in the
-About Me or the info box, `[!stpf=url=https://steamprofiler.org/bars.svg?...]`,
+About Me or the info box, `{!stpf=url=https://steamprofiler.org/api/bars.svg?...}`,
 names one of the site's own embeds, and the extension puts that picture on the
 page. Steam itself cannot render it, so it appears only for readers who have
 the extension. The tag may name no address other than steamprofiler.org, and

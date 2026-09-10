@@ -1,8 +1,8 @@
 /* The card a Steam profile asked for, drawn on the profile itself.
 
-   Somebody writes `[!stpf=url=https://steamprofiler.org/bars.svg?...]` in their
-   About Me or in their Info Box, and this puts the picture that URL names on
-   the page. Steam cannot render it for anybody, so it appears only for readers
+   Somebody writes `{!stpf=url=https://steamprofiler.org/api/bars.svg?...}` in
+   their About Me or in their Info Box, and this puts the picture that URL names
+   on the page. Steam cannot render it for anybody, so it appears only for readers
    who have this extension - which is the whole shape of the feature and not a
    limitation of it.
 
