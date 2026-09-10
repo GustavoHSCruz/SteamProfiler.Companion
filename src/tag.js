@@ -70,10 +70,19 @@ var SteamProfilerTag = (() => {
      sends does not depend on how somebody happened to capitalise it. */
   const NO_SIGN = "none";
 
+  /** The tag inside a piece of profile text, or null.
+   *
+   *  `raw` is the whole marker as it was written, spaces and all, because the
+   *  caller has to take it back out of the page: the card is drawn where the
+   *  tag was, so the tag itself stops being something to read. */
+  function locate(text) {
+    const match = String(text ?? "").match(TAG);
+    return match ? { raw: match[0], url: match[1], at: match.index } : null;
+  }
+
   /** The raw URL out of a piece of profile text, or null. */
   function find(text) {
-    const match = String(text ?? "").match(TAG);
-    return match ? match[1] : null;
+    return locate(text)?.url ?? null;
   }
 
   /** One of our embed URLs as `{ kind, url }`, or null for anything else. */
@@ -118,5 +127,5 @@ var SteamProfilerTag = (() => {
     return { kind, href: url.href, refused };
   }
 
-  return { find, parse, read, KINDS, ORIGIN };
+  return { find, locate, parse, read, KINDS, ORIGIN };
 })();

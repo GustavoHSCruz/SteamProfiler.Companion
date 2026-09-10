@@ -19,6 +19,10 @@
   all for anyone else.
 - Say whose card it is: the panel carries the name and the disclaimer, and the
   mark on the picture can no longer be turned off inside Steam.
+- Draw the card where the marker was written, and take the marker out of the
+  page once the picture is standing in its place. It used to be hoisted to the
+  top of the profile while the tag stayed visible underneath, which is both
+  halves of the wrong answer.
 - Read the marker in braces, and forgive whitespace inside it. Steam parses
   these fields as BBCode, which owns the square bracket: a marker it does not
   recognise comes back padded, so `[!stpf=url=X]` is stored as

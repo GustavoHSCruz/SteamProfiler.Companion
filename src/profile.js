@@ -31,6 +31,7 @@
      lives. Read as text: Steam turns a pasted URL into a link, and textContent
      flattens that back into the URL, which is what the tag actually said. */
   const SOURCES = ".profile_summary, .profile_customization";
+  const TEXT_NODE = 3;
   const OWNER_IN_SCRIPT = /"steamid"\s*:\s*"(7656119\d{10})"/;
 
   const t = (key, substitutions) => chrome.i18n.getMessage(key, substitutions) || key;
@@ -72,19 +73,54 @@
     return null;
   }
 
-  /** The text of the first block on this page that carries a tag. */
-  function tagText() {
+  /** The first block on this page that carries a tag, and the tag in it. */
+  function findTag() {
     for (const block of document.querySelectorAll(SOURCES)) {
-      const text = block.textContent || "";
-      if (SteamProfilerTag.find(text)) return text;
+      const found = SteamProfilerTag.locate(block.textContent || "");
+      if (found) return { block, found };
     }
     return null;
   }
 
-  function insertionPoint() {
-    return document.querySelector(".profile_customization_area")
-      || document.querySelector(".profile_content_inner")
-      || document.querySelector(".profile_content");
+  /** The text node holding the whole marker, and where it starts in it.
+   *
+   *  A single node is the ordinary case and the only one handled: what somebody
+   *  typed is one run of text. It stops being one if Steam turns the address
+   *  inside the marker into a link, which splits the run across an <a> - and
+   *  then the halves are left alone rather than half-erased, because a stray
+   *  `{!stpf=url=` above the card is worse than the whole tag being visible. */
+  function markerNode(block, raw) {
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const at = (node.nodeValue || "").indexOf(raw);
+      if (at >= 0) return { node, at };
+    }
+    return null;
+  }
+
+  /** Put the card where the tag was, and take the tag out of the page.
+   *
+   *  Somebody who writes the marker in the middle of their info box means the
+   *  card to be there, next to whatever else they put around it - not hoisted
+   *  to the top of the profile, which is where this used to land it. And once
+   *  the picture is standing in the marker's place, the marker itself has
+   *  nothing left to say: leaving both would show every reader with the
+   *  extension a line of machine-readable text above their own card.
+   *
+   *  The text node is split at the marker, the marker's characters are dropped
+   *  from the half that starts with them, and the card goes in between. When
+   *  the marker is not in one piece - see markerNode() - the card is appended
+   *  to the block instead and the text stays where it is, which is still the
+   *  right block and still better than the top of the page. */
+  function place(block, raw, card) {
+    const spot = markerNode(block, raw);
+    if (!spot || !spot.node.parentNode) {
+      block.append(card);
+      return;
+    }
+    const tail = spot.at ? spot.node.splitText(spot.at) : spot.node;
+    tail.nodeValue = (tail.nodeValue || "").slice(raw.length);
+    tail.parentNode.insertBefore(card, tail);
   }
 
   /** The panel around the picture.
@@ -146,46 +182,48 @@
     return box;
   }
 
-  function place(root) {
-    const anchor = insertionPoint();
-    if (!anchor) return false;
-    if (!root.isConnected) anchor.insertAdjacentElement("beforebegin", root);
-    return true;
-  }
-
   async function boot() {
     const owner = ownerId();
     const old = document.getElementById(ROOT_ID);
-    const drop = () => old?.remove();
+    /* Putting the marker back is what makes switching the panel off reversible.
+       It was taken out of the page to make room for the card, so removing the
+       card has to hand it back rather than leave the profile with neither. */
+    const drop = () => {
+      if (!old) return;
+      const raw = old.dataset.spcTag;
+      if (raw) old.replaceWith(document.createTextNode(raw));
+      else old.remove();
+    };
     if (!owner) return drop();
 
     const options = await settings();
     if (!options.enabled || !options.showProfileCards) return drop();
 
-    const text = tagText();
-    if (!text) return drop();
-    const card = SteamProfilerTag.read(text, owner);
-    if (!card) return drop();
+    /* The marker is consumed the first time it is read, so on any later run -
+       a setting changing while this page is open - the card already standing
+       there is the only record that there ever was one. Nothing it draws
+       depends on the settings beyond being switched on, so it is left alone
+       rather than rebuilt from a tag that is no longer in the page. */
+    if (old) return;
 
-    const root = old || frame();
-    for (const stale of root.querySelectorAll(".spc-card-art, .spc-card-notice, .spc-card-lines")) {
-      stale.remove();
-    }
+    const located = findTag();
+    if (!located) return;
+    const card = SteamProfilerTag.read(located.found.raw, owner);
+    if (!card) return;
 
-    if (card.refused) {
-      /* Said only to the person who can act on it, which is the author of the
-         tag looking at their own page. For anybody else the card is simply not
-         drawn: a notice on a stranger's profile marks their page over a mistake
-         they cannot fix and did not make. */
-      if (SteamProfilerIdentity.detect(document) !== owner) return drop();
-      root.append(notice(card.refused));
-      return void place(root);
-    }
+    /* Nothing is drawn for a tag that cannot be, unless the person looking is
+       the one who wrote it. For everybody else the marker is left as it is:
+       the card is the thing worth putting in its place, and there is no card
+       here - so swallowing their text would be taking something and giving
+       nothing back. */
+    if (card.refused && SteamProfilerIdentity.detect(document) !== owner) return;
 
-    if (card.kind !== "text") {
-      root.append(picture(card));
-      return void place(root);
-    }
+    const root = frame();
+    root.dataset.spcTag = located.found.raw;
+    if (card.refused) root.append(notice(card.refused));
+    else if (card.kind !== "text") root.append(picture(card));
+    place(located.block, located.found.raw, root);
+    if (card.refused || card.kind !== "text") return;
 
     /* The Unicode chart is not an image, so it is fetched rather than pointed
        at - and it goes through the service worker, not from here. The
@@ -193,14 +231,13 @@
        `connect-src` that does not include this service, so a fetch from the
        page's own context would be refused; the worker is not subject to the
        page's policy. */
-    if (!place(root)) return;
     try {
       const response = await message({ type: "SP_GET_CARD_TEXT", href: card.href });
       if (!response?.ok) throw new Error(response?.error || "Request failed");
       if (!root.isConnected) return;
       root.append(node("pre", "spc-card-lines", response.data));
     } catch {
-      drop();
+      root.replaceWith(document.createTextNode(located.found.raw));
     }
   }
 

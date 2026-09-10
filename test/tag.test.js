@@ -144,3 +144,19 @@ test("a marker that was never opened or never closed is not a tag", () => {
   assert.equal(tag.read(`{!stpf=url=${url}`, OWNER), null);
   assert.equal(tag.read(`!stpf=url=${url}}`, OWNER), null);
 });
+
+test("the whole marker comes back, so the page can be rid of it", () => {
+  // The card is drawn where the tag was, which means the tag itself has to be
+  // taken out of the text - and taking it out needs the exact characters that
+  // were written, padding included, not the address inside them.
+  const url = "https://steamprofiler.org/api/bars.svg?q=me";
+  const bio = `before [ !stpf=url=${url} ] after`;
+  const found = tag.locate(bio);
+  assert.equal(found.raw, `[ !stpf=url=${url} ]`);
+  assert.equal(found.url, url);
+  assert.equal(bio.slice(found.at, found.at + found.raw.length), found.raw);
+  // Removing exactly that leaves the text either side of it intact.
+  assert.equal(bio.slice(0, found.at) + bio.slice(found.at + found.raw.length),
+               "before  after");
+  assert.equal(tag.locate("nothing here"), null);
+});
