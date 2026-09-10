@@ -48,6 +48,12 @@ var SteamProfilerTag = (() => {
   const STEAMID64 = /^7656119\d{10}$/;
   /* The two parameters that carry text somebody typed. */
   const TYPED = ["label", "sign"];
+  /* Except for this one word. `sign=none` is an off switch and not a piece of
+     writing: it draws nothing, so there is nothing in it to publish, and
+     stripping it with the rest would have meant a card on a profile could never
+     be unsigned. It is passed on in one spelling so that what the extension
+     sends does not depend on how somebody happened to capitalise it. */
+  const NO_SIGN = "none";
 
   /** The raw URL out of a piece of profile text, or null. */
   function find(text) {
@@ -85,7 +91,10 @@ var SteamProfilerTag = (() => {
     const refused = kind === "badge" && url.searchParams.has("label")
       ? "cardLabel"
       : null;
+    const unsigned = String(url.searchParams.get("sign") ?? "").trim()
+      .toLowerCase() === NO_SIGN;
     for (const name of TYPED) url.searchParams.delete(name);
+    if (unsigned) url.searchParams.set("sign", NO_SIGN);
     url.searchParams.set("q", owner);
     /* The server reads this and forces the mark on, takes the signature from
        the persona and refuses a custom label. The tag cannot opt out of it,

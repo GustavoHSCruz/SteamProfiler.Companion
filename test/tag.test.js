@@ -68,6 +68,20 @@ test("typed text is dropped before the request is made", () => {
   assert.equal(params.get("theme"), "light");
 });
 
+test("a card can still be asked for no signature at all", () => {
+  // `sign=none` is an off switch and not typed text: it draws nothing, so it is
+  // the one spelling of this parameter that is passed on rather than dropped.
+  for (const written of ["none", "NONE", " None "]) {
+    const read = tag.read(card(`?sign=${encodeURIComponent(written)}`), OWNER);
+    assert.equal(new URL(read.href).searchParams.get("sign"), "none", written);
+  }
+  // Anything else in the same field is still text, and still goes.
+  assert.equal(
+    new URL(tag.read(card("?sign=nonetheless"), OWNER).href).searchParams.has("sign"),
+    false,
+  );
+});
+
 test("the second profile on a versus card survives", () => {
   const read = tag.read(`[!stpf=url=https://steamprofiler.org/versus.svg?vs=gaben]`, OWNER);
   assert.equal(read.kind, "versus");

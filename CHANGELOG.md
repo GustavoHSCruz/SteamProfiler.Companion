@@ -19,6 +19,9 @@
   all for anyone else.
 - Say whose card it is: the panel carries the name and the disclaimer, and the
   mark on the picture can no longer be turned off inside Steam.
+- Let a card be asked for unsigned with `sign=none`. Everything else typed into
+  that field is dropped, but the off switch is not writing: it draws nothing, so
+  there is nothing in it to publish.
 
 ## 0.2.3 - 2026-09-10
 
