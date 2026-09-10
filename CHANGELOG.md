@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3 - 2026-09-10
+
+- Size each row of figures to how many it has, instead of leaving the grid's
+  own colour showing as a grey block where a figure is missing.
+- Show hours in the last two weeks and the day a game was last played, both
+  already in the reply and drawn nowhere - which is what a game with no
+  achievement set has to say about somebody's record of it.
+
 ## 0.2.2 - 2026-09-10
 
 - Find the signed-in reader on accounts that have a custom Steam URL, which

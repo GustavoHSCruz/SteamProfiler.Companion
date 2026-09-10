@@ -29,7 +29,7 @@ npm run build
 ```
 
 That produces both an unpacked directory and
-`dist/steamprofiler-companion-0.2.2.zip`.
+`dist/steamprofiler-companion-0.2.3.zip`.
 
 In Chrome, open `chrome://extensions`, enable Developer mode, choose **Load
 unpacked**, and select the unpacked directory inside `dist/`. In Firefox, open

@@ -111,6 +111,26 @@
     document.addEventListener("keydown", escape);
   }
 
+  /** A day, in the reader's own language. `last_played` arrives as a date and
+   *  this panel has room for a short one. */
+  function shortDate(iso) {
+    const at = new Date(iso);
+    if (Number.isNaN(at.getTime())) return null;
+    return new Intl.DateTimeFormat(chrome.i18n.getUILanguage().replace("_", "-"), {
+      day: "numeric", month: "short", year: "numeric",
+    }).format(at);
+  }
+
+  /** The row of figures, sized to how many there are. A fixed three columns
+   *  left an empty cell painted in the grid's own colour whenever a game had
+   *  fewer - a game with no achievements at all, like Valheim, showed two grey
+   *  blocks where its progress would have been. */
+  function values(className, items) {
+    const row = node("div", `${className} spc-cols-${Math.min(items.length, 3)}`);
+    for (const item of items) row.append(item);
+    return row;
+  }
+
   function metric(value, label) {
     const item = node("div", "spc-metric");
     item.append(node("strong", "", value), node("span", "", label));
@@ -126,19 +146,19 @@
   function reviewInsight(reviews) {
     if (!reviews?.total || reviews.positive_pct == null) return null;
     const section = insight(t("reviewXray"), "spc-review-insight");
-    const values = node("div", "spc-review-values");
-    values.append(metric(`${decimal(reviews.positive_pct)}%`, t("reviewAllTime")));
+    const figures = [metric(`${decimal(reviews.positive_pct)}%`, t("reviewAllTime"))];
     const recent = reviews.recent;
     if (recent?.total && recent.positive_pct != null) {
-      values.append(metric(`${decimal(recent.positive_pct)}%`, t("reviewRecent")));
+      figures.push(metric(`${decimal(recent.positive_pct)}%`, t("reviewRecent")));
       const delta = Math.round((recent.positive_pct - reviews.positive_pct) * 10) / 10;
       const direction = delta >= 3 ? "reviewImproving" : delta <= -3 ? "reviewFalling" : "reviewStable";
       const verdict = node("p", `spc-verdict ${delta >= 3 ? "spc-good" : delta <= -3 ? "spc-warn" : ""}`,
         t(direction, decimal(Math.abs(delta))));
-      section.append(values, verdict);
+      section.append(values("spc-review-values", figures), verdict);
       section.append(node("p", "spc-evidence", t("reviewVolume", number(recent.total))));
     } else {
-      section.append(values, node("p", "spc-evidence", t("reviewNoRecent")));
+      section.append(values("spc-review-values", figures),
+        node("p", "spc-evidence", t("reviewNoRecent")));
     }
     return section;
   }
@@ -207,18 +227,26 @@
     if (profile.state === "absent") {
       section.append(node("p", "spc-verdict", t("personalNotOwned")));
     } else {
-      const values = node("div", "spc-personal-values");
-      if (profile.hours != null) values.append(metric(`${decimal(profile.hours)}h`, t("personalHours")));
+      const figures = [];
+      if (profile.hours != null) figures.push(metric(`${decimal(profile.hours)}h`, t("personalHours")));
       if (profile.achievements?.total) {
-        values.append(metric(
+        figures.push(metric(
           `${number(profile.achievements.unlocked || 0)}/${number(profile.achievements.total)}`,
           t("personalAchievements"),
         ));
         if (profile.achievements.completion != null) {
-          values.append(metric(`${decimal(profile.achievements.completion)}%`, t("personalCompletion")));
+          figures.push(metric(`${decimal(profile.achievements.completion)}%`, t("personalCompletion")));
         }
       }
-      section.append(values);
+      // Both of these were already in the reply and drawn nowhere. They are
+      // what a game with no achievement set has to say about somebody's own
+      // record of it, which is the case that used to draw an empty row.
+      if (profile.hours_2weeks) {
+        figures.push(metric(`${decimal(profile.hours_2weeks)}h`, t("personalRecentHours")));
+      }
+      const last = profile.last_played ? shortDate(profile.last_played) : null;
+      if (last) figures.push(metric(last, t("personalLastPlayed")));
+      section.append(values("spc-personal-values", figures.slice(0, 3)));
       const next = profile.achievements?.easiest_missing;
       if (next?.name) section.append(node("p", "spc-next", t("personalNext", next.name)));
     }

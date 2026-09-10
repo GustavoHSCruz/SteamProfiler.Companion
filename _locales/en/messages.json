@@ -1,73 +1,221 @@
 {
-  "panelKicker": { "message": "Steam insights" },
-  "panelTitle": { "message": "SteamProfiler" },
-  "loading": { "message": "Reading this game…" },
-  "readingTitle": { "message": "Learning this game" },
-  "readingBody": { "message": "SteamProfiler has queued its public store record. This panel will refresh once." },
-  "absentTitle": { "message": "No public store record" },
-  "absentBody": { "message": "SteamProfiler could not find this app in Steam's public catalogue." },
-  "errorTitle": { "message": "SteamProfiler is unavailable" },
-  "errorBody": { "message": "The Steam page still works normally. Try the companion again in a moment." },
-  "retry": { "message": "Try again" },
-  "playingNow": { "message": "playing now" },
-  "positiveReviews": { "message": "positive" },
-  "reviews": { "message": "reviews" },
-  "release": { "message": "released" },
-  "reviewXray": { "message": "Review X-ray" },
-  "reviewAllTime": { "message": "all-time reviews" },
-  "reviewRecent": { "message": "recent reviews" },
-  "reviewImproving": { "message": "Reviews are improving: +$1 points." },
-  "reviewFalling": { "message": "Reviews are falling: −$1 points." },
-  "reviewStable": { "message": "Recent reviews are steady: a $1-point change." },
-  "reviewVolume": { "message": "Sample of the latest $1 reviews." },
-  "reviewNoRecent": { "message": "There is not yet a sufficient recent sample to compare." },
-  "activityTitle": { "message": "Official activity" },
-  "activityActive": { "message": "Very active communication" },
-  "activityMaintained": { "message": "Recent official activity" },
-  "activityQuiet": { "message": "Little recent activity" },
-  "activityLongQuiet": { "message": "A long time without official activity" },
-  "activityToday": { "message": "The latest official post is from today." },
-  "activityDays": { "message": "Latest official post was $1 days ago." },
-  "activityCaveat": { "message": "Posts indicate activity, but do not guarantee that the game was updated." },
-  "audienceTitle": { "message": "May be a good choice for" },
-  "audienceCoop": { "message": "co-op play" },
-  "audienceMultiplayer": { "message": "multiplayer" },
-  "audienceSolo": { "message": "solo play" },
-  "audienceAchievements": { "message": "achievement hunting" },
-  "audienceLiving": { "message": "players wanting an active game" },
-  "personalTitle": { "message": "On your profile" },
-  "personalNotOwned": { "message": "This game is not in your public library." },
-  "personalHours": { "message": "recorded hours" },
-  "personalAchievements": { "message": "achievements" },
-  "personalCompletion": { "message": "complete" },
-  "personalNext": { "message": "Next accessible achievement: $1" },
-  "personalNoId": { "message": "Your SteamID could not be identified on this page." },
-  "personalNoCookies": { "message": "Enter it in settings. The extension does not read cookies or credentials." },
-  "personalLoading": { "message": "Reading only your public progress in this game…" },
-  "personalUnavailable": { "message": "Your progress is unavailable." },
-  "personalPrivate": { "message": "Your profile or game details may be private, or Steam may be unavailable." },
-  "openAnalysis": { "message": "Open complete analysis" },
-  "watchTrailer": { "message": "Watch trailer" },
-  "trailer": { "message": "Trailer" },
-  "close": { "message": "Close" },
-  "extensionEnabled": { "message": "Store panel" },
-  "extensionEnabledHelp": { "message": "Show SteamProfiler on game pages." },
-  "statsEnabled": { "message": "Public metrics" },
-  "statsEnabledHelp": { "message": "Show players, reviews and release date." },
-  "profileEnabled": { "message": "Use my profile" },
-  "profileEnabledHelp": { "message": "With your consent, uses the public SteamID visible on the page to show hours and achievements for this game. It does not read cookies." },
-  "profilePopupHelp": { "message": "Show your public progress in this game without reading cookies." },
-  "steamId": { "message": "Manual SteamID (optional)" },
-  "steamIdHelp": { "message": "Use when Steam does not expose your profile in its header. It must be a 17-digit SteamID64." },
-  "trailerEnabled": { "message": "Trailer button" },
-  "trailerEnabledHelp": { "message": "Play Steam's public trailer on demand." },
-  "openCurrentGame": { "message": "Open this game on SteamProfiler" },
-  "moreSettings": { "message": "More settings" },
-  "settings": { "message": "Settings" },
-  "settingsTitle": { "message": "Make it your companion." },
-  "settingsIntro": { "message": "Preferences stay in your browser. By default, the extension sends only the app id and language. If you enable your profile, it also sends your public SteamID to read progress for that game - never cookies or credentials." },
-  "language": { "message": "Catalogue language" },
-  "languageHelp": { "message": "Language requested from the public API." },
-  "languageAuto": { "message": "Browser default" },
-  "saved": { "message": "Saved" }
+  "panelKicker": {
+    "message": "Steam insights"
+  },
+  "panelTitle": {
+    "message": "SteamProfiler"
+  },
+  "loading": {
+    "message": "Reading this game…"
+  },
+  "readingTitle": {
+    "message": "Learning this game"
+  },
+  "readingBody": {
+    "message": "SteamProfiler has queued its public store record. This panel will refresh once."
+  },
+  "absentTitle": {
+    "message": "No public store record"
+  },
+  "absentBody": {
+    "message": "SteamProfiler could not find this app in Steam's public catalogue."
+  },
+  "errorTitle": {
+    "message": "SteamProfiler is unavailable"
+  },
+  "errorBody": {
+    "message": "The Steam page still works normally. Try the companion again in a moment."
+  },
+  "retry": {
+    "message": "Try again"
+  },
+  "playingNow": {
+    "message": "playing now"
+  },
+  "positiveReviews": {
+    "message": "positive"
+  },
+  "reviews": {
+    "message": "reviews"
+  },
+  "release": {
+    "message": "released"
+  },
+  "reviewXray": {
+    "message": "Review X-ray"
+  },
+  "reviewAllTime": {
+    "message": "all-time reviews"
+  },
+  "reviewRecent": {
+    "message": "recent reviews"
+  },
+  "reviewImproving": {
+    "message": "Reviews are improving: +$1 points."
+  },
+  "reviewFalling": {
+    "message": "Reviews are falling: −$1 points."
+  },
+  "reviewStable": {
+    "message": "Recent reviews are steady: a $1-point change."
+  },
+  "reviewVolume": {
+    "message": "Sample of the latest $1 reviews."
+  },
+  "reviewNoRecent": {
+    "message": "There is not yet a sufficient recent sample to compare."
+  },
+  "activityTitle": {
+    "message": "Official activity"
+  },
+  "activityActive": {
+    "message": "Very active communication"
+  },
+  "activityMaintained": {
+    "message": "Recent official activity"
+  },
+  "activityQuiet": {
+    "message": "Little recent activity"
+  },
+  "activityLongQuiet": {
+    "message": "A long time without official activity"
+  },
+  "activityToday": {
+    "message": "The latest official post is from today."
+  },
+  "activityDays": {
+    "message": "Latest official post was $1 days ago."
+  },
+  "activityCaveat": {
+    "message": "Posts indicate activity, but do not guarantee that the game was updated."
+  },
+  "audienceTitle": {
+    "message": "May be a good choice for"
+  },
+  "audienceCoop": {
+    "message": "co-op play"
+  },
+  "audienceMultiplayer": {
+    "message": "multiplayer"
+  },
+  "audienceSolo": {
+    "message": "solo play"
+  },
+  "audienceAchievements": {
+    "message": "achievement hunting"
+  },
+  "audienceLiving": {
+    "message": "players wanting an active game"
+  },
+  "personalTitle": {
+    "message": "On your profile"
+  },
+  "personalNotOwned": {
+    "message": "This game is not in your public library."
+  },
+  "personalHours": {
+    "message": "recorded hours"
+  },
+  "personalAchievements": {
+    "message": "achievements"
+  },
+  "personalCompletion": {
+    "message": "complete"
+  },
+  "personalRecentHours": {
+    "message": "last 2 weeks"
+  },
+  "personalLastPlayed": {
+    "message": "last played"
+  },
+  "personalNext": {
+    "message": "Next accessible achievement: $1"
+  },
+  "personalNoId": {
+    "message": "Your SteamID could not be identified on this page."
+  },
+  "personalNoCookies": {
+    "message": "Enter it in settings. The extension does not read cookies or credentials."
+  },
+  "personalLoading": {
+    "message": "Reading only your public progress in this game…"
+  },
+  "personalUnavailable": {
+    "message": "Your progress is unavailable."
+  },
+  "personalPrivate": {
+    "message": "Your profile or game details may be private, or Steam may be unavailable."
+  },
+  "openAnalysis": {
+    "message": "Open complete analysis"
+  },
+  "watchTrailer": {
+    "message": "Watch trailer"
+  },
+  "trailer": {
+    "message": "Trailer"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "extensionEnabled": {
+    "message": "Store panel"
+  },
+  "extensionEnabledHelp": {
+    "message": "Show SteamProfiler on game pages."
+  },
+  "statsEnabled": {
+    "message": "Public metrics"
+  },
+  "statsEnabledHelp": {
+    "message": "Show players, reviews and release date."
+  },
+  "profileEnabled": {
+    "message": "Use my profile"
+  },
+  "profileEnabledHelp": {
+    "message": "With your consent, uses the public SteamID visible on the page to show hours and achievements for this game. It does not read cookies."
+  },
+  "profilePopupHelp": {
+    "message": "Show your public progress in this game without reading cookies."
+  },
+  "steamId": {
+    "message": "Manual SteamID (optional)"
+  },
+  "steamIdHelp": {
+    "message": "Use when Steam does not expose your profile in its header. It must be a 17-digit SteamID64."
+  },
+  "trailerEnabled": {
+    "message": "Trailer button"
+  },
+  "trailerEnabledHelp": {
+    "message": "Play Steam's public trailer on demand."
+  },
+  "openCurrentGame": {
+    "message": "Open this game on SteamProfiler"
+  },
+  "moreSettings": {
+    "message": "More settings"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "settingsTitle": {
+    "message": "Make it your companion."
+  },
+  "settingsIntro": {
+    "message": "Preferences stay in your browser. By default, the extension sends only the app id and language. If you enable your profile, it also sends your public SteamID to read progress for that game - never cookies or credentials."
+  },
+  "language": {
+    "message": "Catalogue language"
+  },
+  "languageHelp": {
+    "message": "Language requested from the public API."
+  },
+  "languageAuto": {
+    "message": "Browser default"
+  },
+  "saved": {
+    "message": "Saved"
+  }
 }
