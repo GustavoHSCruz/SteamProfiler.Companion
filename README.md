@@ -114,3 +114,7 @@ The extension does not copy the separately licensed SteamProfiler Player; its
 trailer is a browser-native `<video>` element. SteamProfiler is independent and
 is not affiliated with Valve Corporation. Steam and the Steam logo are
 trademarks of Valve Corporation.
+
+## Terms of use
+
+See [TERMS.md](TERMS.md) for this application’s terms and the Git-linked revision archive.

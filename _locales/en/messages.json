@@ -238,5 +238,7 @@
   },
   "cardLabel": {
     "message": "A badge with your own text is not shown inside Steam. Remove the label parameter from the tag and it will appear."
-  }
+  },
+  "termsUse": { "message": "Terms of Use" },
+  "termsHistory": { "message": "Terms history" }
 }

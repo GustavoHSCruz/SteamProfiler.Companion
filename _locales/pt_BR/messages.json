@@ -238,5 +238,7 @@
   },
   "cardLabel": {
     "message": "Badge com texto próprio não aparece dentro da Steam. Tire o parâmetro label da tag e ele volta a aparecer."
-  }
+  },
+  "termsUse": { "message": "Termos de Uso" },
+  "termsHistory": { "message": "Histórico dos termos" }
 }
