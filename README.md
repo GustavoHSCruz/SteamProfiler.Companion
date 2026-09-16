@@ -36,8 +36,10 @@ runtime.
 npm run build
 ```
 
-That produces both an unpacked directory and
-`dist/steamprofiler-companion-0.2.3.zip`.
+That produces both an unpacked directory and a zip beside it, each named for
+the version in `manifest.json`. The version is not written here on purpose:
+a number copied into prose is a number that goes stale, and `tools/check.mjs`
+refuses one.
 
 In Chrome, open `chrome://extensions`, enable Developer mode, choose **Load
 unpacked**, and select the unpacked directory inside `dist/`. In Firefox, open

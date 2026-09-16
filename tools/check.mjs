@@ -65,4 +65,14 @@ for (const key of referencedMessages) {
   if (!defaultMessages[key]) throw new Error(`missing English message: ${key}`);
 }
 
+// A version written into prose is a version that goes stale, and this one did:
+// the README named a 0.2.3 zip while the manifest had moved to 0.3.0, which is
+// the first thing a reader of the repository is asked to run. The build names
+// the file after the manifest, so the documents never need the number at all.
+for (const file of ["README.md", "CONTRIBUTING.md"]) {
+  const source = readFileSync(join(root, file), "utf8");
+  const stale = source.match(/steamprofiler-companion-\d+\.\d+\.\d+\.zip/);
+  if (stale) throw new Error(`${file} names a fixed build: ${stale[0]}`);
+}
+
 console.log(`check: manifest and ${files.length} source files are valid`);
