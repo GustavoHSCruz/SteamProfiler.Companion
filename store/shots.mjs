@@ -23,7 +23,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const out = join(root, "store");
+const out = join(root, "store", "captures");
 const PORT = process.env.CDP_PORT ?? "9333";
 
 /* The store page to photograph. Portal 2 has no age gate, is free of regional

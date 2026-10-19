@@ -13,7 +13,13 @@ file here was made. `listing.md` is the words; everything else is the pictures.
 | `screenshot-panel-1280x800.png` | First in the carousel, everywhere |
 | `screenshot-in-page-1280x800.png` | The panel in the Steam page it draws into |
 | `screenshot-settings-1280x800.png` | The settings, which is what a reviewer looks for |
-| `raw-panel.png` | The close-up the first screenshot is built around |
+| `captures/raw-panel.png` | The close-up the first screenshot is built around |
+
+The previous artwork is preserved in `claude-original/`. The current visual
+direction uses two text-free atmospheric plates in `art/`; store text, the
+SteamProfiler mark and all product UI are still rendered from real project
+assets by `make.mjs`. The untouched browser captures used by the compositor
+live in `captures/`.
 
 The store icon is `assets/icon-128.png` in the repository root, the same one
 the extension already ships.
@@ -24,7 +30,9 @@ the extension already ships.
 
 Needs the front end checked out beside this repository for its fonts, or
 `FONT_DIR` pointing at a copy of `site/fonts`. Nothing else, and no browser
-window: the tiles are rasterised headless.
+window: the tiles and framed screenshots are rasterised headless. The source
+captures in `captures/` are replaced only when `shots.mjs` is run; the Claude
+versions in `claude-original/` are never overwritten.
 
 ## Retaking the screenshots
 
